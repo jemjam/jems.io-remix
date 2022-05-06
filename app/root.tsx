@@ -30,3 +30,24 @@ export default function App() {
     </html>
   );
 }
+
+
+export function ErrorBoundary({ error }) {
+  console.error(error);
+  return (
+    <html>
+      <head>
+        <title>Oh no!</title>
+        <Meta />
+        <Links />
+      </head>
+      <body>
+        <h1>Error</h1>
+        <code>{JSON.stringify(error)}</code>
+        
+        {/* add the UI you want your users to see */}
+        <Scripts />
+      </body>
+    </html>
+  );
+}
