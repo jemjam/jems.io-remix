@@ -3,5 +3,5 @@ export const config = {
   projectId: "noabyjmx",
   dataset: "production",
   useCdn: false,
-  token: process.env.SANITY_API_TOKEN ?? ``,
+  // token: process.env.SANITY_API_TOKEN ?? ``,
 };

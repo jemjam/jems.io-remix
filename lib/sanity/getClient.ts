@@ -6,12 +6,3 @@ import { config } from "./config";
 export const sanityClient = new PicoSanity(config);
 
 // Authenticated client for fetching draft documents
-export const secureClient = new PicoSanity({
-	...config,
-	useCdn: false,
-	token: process.env.SANITY_API_TOKEN ?? ``,
-});
-
-// Helper function to choose the correct client
-export const getClient = (usePreview = false) =>
-	usePreview ? secureClient : sanityClient;
