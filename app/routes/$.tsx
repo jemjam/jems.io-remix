@@ -1,39 +1,35 @@
 import { useParams, useLoaderData } from "@remix-run/react";
-import type { LoaderFunction, ActionFunction } from "@remix-run/cloudflare";
-import { sanityClient } from "../../lib/sanity/getClient";
+import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
+import { sanityClient } from "lib/sanity/getClient";
 import { PortableText } from "@portabletext/react";
+import type { Page, ImageWithAlt } from "@jemjam/jems.io-sanity";
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const currentPath = params["*"];
+  const currentSlug = params["*"];
 
-  const pageData = await sanityClient.fetch(
+  const pageData: Page = await sanityClient.fetch(
     "*[_type == $type][slug.current == $slug][0]",
-    { type: "page", slug: currentPath }
+    { type: "page", slug: currentSlug }
   );
 
-  console.log("all params", pageData);
-
-  // if (fullPath == 'your/mom') {
-  //   throw new Error('You are not allowed to visit this page');
-  // }
-  console.log("route param:", currentPath);
-  return { fullPath: currentPath, pageData };
+  return { currentSlug, pageData };
 };
 
-// export const action: ActionFunction = async ({ params }) => {
-//   console.log(params);
-//   return null;
-// };
-
-// export default function PostRoute() {
-//   const params = useParams();
-//   console.log(params["*"]);
-//   return null;
-// }
+export const meta: MetaFunction = ({ data }) => {
+  if (!data) {
+    return {
+      title: "Unknown",
+    };
+  }
+  const pageData: Page = data?.pageData;
+  return {
+    title: pageData?.title,
+  };
+};
 
 const myPortableTextComponents = {
   types: {
-    imageWithAlt: ({ value }) => {
+    imageWithAlt: ({ value }: { value: ImageWithAlt }) => {
       const { alt, caption, image = {} } = value;
       // This is coming from the cloudinary image asset field
       const { secure_url = "", derived = [] } = image;
@@ -49,7 +45,7 @@ const myPortableTextComponents = {
   },
 };
 
-export default function Index(props) {
+export default function Index() {
   const data = useLoaderData();
   console.log("our props", data);
 
@@ -63,10 +59,3 @@ export default function Index(props) {
     </div>
   );
 }
-
-// export function ErrorBoundary({ error }) {
-//   console.error(error);
-//   return (
-//     <div>There was an error in here <code>{JSON.stringify(error)}</code></div>
-//   );
-// }
