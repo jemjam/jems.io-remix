@@ -4,7 +4,7 @@ import { sanityClient } from "lib/sanity/getClient";
 import { PortableText } from "@portabletext/react";
 import type { Page, ImageWithAlt } from "@jemjam/jems.io-sanity";
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, context }) => {
   const currentSlug = params["*"];
 
   const pageData: Page = await sanityClient.fetch(
