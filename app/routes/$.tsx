@@ -3,12 +3,25 @@ import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
 import { sanityClient } from "lib/sanity/getClient";
 import { PortableText } from "@portabletext/react";
 import type { Page, ImageWithAlt } from "@jemjam/jems.io-sanity";
+import { Link } from "@remix-run/react";
 
 export const loader: LoaderFunction = async ({ params, context }) => {
   const currentSlug = params["*"];
 
   const pageData: Page = await sanityClient.fetch(
-    "*[_type == $type][slug.current == $slug][0]",
+    `*[_type == $type][slug.current == $slug][0]{
+  ...,
+  body[]{
+    ...,
+    markDefs[]{
+      ...,
+      _type == "internalLink" => {
+        "slug": @.reference->slug.current,
+        "type": @.reference->_type
+      }
+    }
+  }
+}`,
     { type: "page", slug: currentSlug }
   );
 
@@ -42,6 +55,22 @@ const myPortableTextComponents = {
         </figure>
       );
     },
+  },
+  marks: {
+    internalLink: ({ value, children }:any) => {
+      const { slug = '', type } = value;
+      console.log("lets render internalLink", { value, children });
+      const href = `/${slug}`;
+      return <Link to={href}>{children}</Link>;
+    },
+    link: ({value, children}:any) => {
+      // Read https://css-tricks.com/use-target_blank/
+      const { blank, href } = value
+      return blank ?
+        <a href={href} target="_blank" rel="noreferrer">{children}</a>
+        : <a href={href}>{children}</a>
+    }
+
   },
 };
 
