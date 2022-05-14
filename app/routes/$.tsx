@@ -1,9 +1,9 @@
-import { useParams, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
 import { sanityClient } from "lib/sanity/getClient";
 import { PortableText } from "@portabletext/react";
-import type { Page, ImageWithAlt } from "@jemjam/jems.io-sanity";
-import { Link } from "@remix-run/react";
+import type { Page } from "@jemjam/jems.io-sanity";
+import { myPortableTextComponents } from "~/components/myPortableTextComponents";
 
 export const loader: LoaderFunction = async ({ params, context }) => {
   const currentSlug = params["*"];
@@ -38,40 +38,6 @@ export const meta: MetaFunction = ({ data }) => {
   return {
     title: pageData?.title,
   };
-};
-
-const myPortableTextComponents = {
-  types: {
-    imageWithAlt: ({ value }: { value: ImageWithAlt }) => {
-      const { alt, caption, image = {} } = value;
-      // This is coming from the cloudinary image asset field
-      const { secure_url = "", derived = [] } = image;
-      // Get first derived image if it exists, otherwise use the main image
-      const imageUrl = derived?.[0]?.secure_url ?? secure_url;
-      return (
-        <figure>
-          <img src={imageUrl} alt={alt} />
-          {caption && <figcaption>{caption}</figcaption>}
-        </figure>
-      );
-    },
-  },
-  marks: {
-    internalLink: ({ value, children }:any) => {
-      const { slug = '', type } = value;
-      console.log("lets render internalLink", { value, children });
-      const href = `/${slug}`;
-      return <Link to={href}>{children}</Link>;
-    },
-    link: ({value, children}:any) => {
-      // Read https://css-tricks.com/use-target_blank/
-      const { blank, href } = value
-      return blank ?
-        <a href={href} target="_blank" rel="noreferrer">{children}</a>
-        : <a href={href}>{children}</a>
-    }
-
-  },
 };
 
 export default function Index() {
