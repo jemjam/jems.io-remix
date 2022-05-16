@@ -1,29 +1,21 @@
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, Link } from "@remix-run/react";
 import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
-import { sanityClient } from "lib/sanity/getClient";
 import { PortableText } from "@portabletext/react";
-import type { Page } from "@jemjam/jems.io-sanity";
+import type { Post } from "@jemjam/jems.io-sanity";
 import { myPortableTextComponents } from "~/components/myPortableTextComponents";
+import getDocumentBySlug from "lib/sanity/getDocumentBySlug";
 
 export const loader: LoaderFunction = async ({ params, context }) => {
   const currentSlug = params["*"];
 
-  const pageData: Page = await sanityClient.fetch(
-    `*[_type == $type][slug.current == $slug][0]{
-  ...,
-  body[]{
-    ...,
-    markDefs[]{
-      ...,
-      _type == "internalLink" => {
-        "slug": @.reference->slug.current,
-        "type": @.reference->_type
-      }
-    }
+  if (!currentSlug) {
+    throw new Error("No slug found");
   }
-}`,
-    { type: "post", slug: currentSlug }
-  );
+
+  const pageData: Post = await getDocumentBySlug(currentSlug, "post");
+  if (!pageData) {
+    throw new Error("No post found");
+  }
 
   return { currentSlug, pageData };
 };
@@ -34,7 +26,7 @@ export const meta: MetaFunction = ({ data }) => {
       title: "Unknown",
     };
   }
-  const pageData: Page = data?.pageData;
+  const pageData: Post = data?.pageData;
   return {
     title: pageData?.title,
   };
@@ -51,6 +43,8 @@ export default function Index() {
         value={data?.pageData?.body ?? []}
         components={myPortableTextComponents}
       />
+
+      <Link to="/posts">Back to posts</Link>
     </div>
   );
 }
