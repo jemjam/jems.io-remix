@@ -1,9 +1,7 @@
-import { useLoaderData, useMatches } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
-import { PortableText } from "@portabletext/react";
 import type { Post } from "@jemjam/jems.io-sanity";
 import { Link } from "@remix-run/react";
-import { myPortableTextComponents } from "~/components/myPortableTextComponents";
 import getListOfPosts from "lib/sanity/getListOfPosts";
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -30,8 +28,6 @@ export const meta: MetaFunction = ({ data }) => {
 
 export default function Index() {
   const data = useLoaderData();
-  const matches = useMatches();
-  console.log("our props", data, matches);
 
   return (
     <div>
@@ -46,10 +42,6 @@ export default function Index() {
           );
         })}
       </ul>
-      {/* <PortableText
-        value={data?.pageData?.body ?? []}
-        components={myPortableTextComponents}
-      /> */}
     </div>
   );
 }

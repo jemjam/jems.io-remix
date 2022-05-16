@@ -17,6 +17,7 @@ export const loader: LoaderFunction = async ({ params, context }) => {
     throw new Error("Failed to load site settings");
   }
 
+  console.log('siteSettings', pageData);
   return { ...pageData };
 };
 
