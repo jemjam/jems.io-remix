@@ -46,7 +46,9 @@ export default function App() {
   useEffect(() => {
     if (fathomSiteId) {
       if (!fathomLoaded.current) {
-        Fathom.load(fathomSiteId);
+        Fathom.load(fathomSiteId, {
+          url: "https://unwavering-beneficial.jems.io/script.js"
+        });
         fathomLoaded.current = true;
       } else {
         Fathom.trackPageview();
