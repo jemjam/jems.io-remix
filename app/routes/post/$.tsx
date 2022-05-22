@@ -1,29 +1,27 @@
-import { useLoaderData, Link } from "@remix-run/react";
 import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
-import { PortableText } from "@portabletext/react";
 import type { Post } from "@jemjam/jems.io-sanity";
+
+import { useLoaderData, Link } from "@remix-run/react";
+import { json } from '@remix-run/cloudflare'
+import { PortableText } from "@portabletext/react";
 import { myPortableTextComponents } from "~/components/myPortableTextComponents";
 import getDocumentBySlug from "lib/sanity/getDocumentBySlug";
 
 export const loader: LoaderFunction = async ({ params, context }) => {
-  const currentSlug = params["*"];
-
-  if (!currentSlug) {
-    throw new Error("No slug found");
-  }
+  const currentSlug = params["*"] as string;
 
   const pageData: Post = await getDocumentBySlug(currentSlug, "post");
   if (!pageData) {
-    throw new Error("No post found");
+    throw json("No post found", { status: 404 });
   }
 
-  return { currentSlug, pageData };
+  return json(pageData);
 };
 
 export const meta: MetaFunction = ({ data }) => {
   if (!data) {
     return {
-      title: "Unknown",
+      title: "Post not found",
     };
   }
   const pageData: Post = data?.pageData;
@@ -33,18 +31,29 @@ export const meta: MetaFunction = ({ data }) => {
 };
 
 export default function Index() {
-  const data = useLoaderData();
-  console.log("our props", data);
+  const data:Post = useLoaderData();
+  console.log('data', data)
 
   return (
     <div>
-      <h1>{data?.pageData?.title ?? "No Title"}</h1>
+      <h1>{data?.title ?? "No Title"}</h1>
       <PortableText
-        value={data?.pageData?.body ?? []}
+        value={data?.body ?? []}
         components={myPortableTextComponents}
       />
 
-      <Link to="/posts">Back to posts</Link>
+      <Link to="/post">Back to posts</Link>
+    </div>
+  );
+}
+
+export function CatchBoundary() {
+  return (
+    <div>
+      <h1>404</h1>
+      <p>That page doesn't exist (yet).</p>
+
+      <Link to="/post">See posts that do exist.</Link>
     </div>
   );
 }

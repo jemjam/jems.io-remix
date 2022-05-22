@@ -1,30 +1,21 @@
 import { useLoaderData } from "@remix-run/react";
+import { json } from '@remix-run/cloudflare'
 import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
 import type { Post } from "@jemjam/jems.io-sanity";
 import { Link } from "@remix-run/react";
 import getListOfPosts from "lib/sanity/getListOfPosts";
 
 export const loader: LoaderFunction = async ({ params }) => {
-  const pageData = await getListOfPosts();
-  if (!pageData) {
-    throw new Error("No post found");
+  const listOfPosts = await getListOfPosts();
+  if (!listOfPosts) {
+    throw json("No posts found", { status: 404 });
   }
-  console.log("pageData", pageData);
-
-  return { pageData };
+  return json(listOfPosts);
 };
 
-export const meta: MetaFunction = ({ data }) => {
-  if (!data) {
-    return {
-      title: "Unknown",
-    };
-  }
-  const pageData: Post = data?.pageData;
-  return {
-    title: pageData?.title,
-  };
-};
+export const meta: MetaFunction = () => ({
+  title: `All my latest posts on jems.io`,
+});
 
 export default function Index() {
   const data = useLoaderData();
@@ -33,7 +24,7 @@ export default function Index() {
     <div>
       <h1>Latest posts</h1>
       <ul>
-        {data?.pageData?.map((post: Post) => {
+        {data.map((post: Post) => {
           const slug = post?.slug?.current ?? "";
           return (
             <li key={slug}>

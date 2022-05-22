@@ -1,9 +1,11 @@
-import type { SiteSettings, Page } from '@jemjam/jems.io-sanity';
+import type { SiteSettings, Page } from "@jemjam/jems.io-sanity";
 import type { LoaderFunction, MetaFunction } from "@remix-run/cloudflare";
-import getSiteSettings from 'lib/sanity/getSiteSettings';
-import { PortableText } from "@portabletext/react";
-import { myPortableTextComponents } from "~/components/myPortableTextComponents";
+
 import { useLoaderData, Link } from "@remix-run/react";
+import { json } from "@remix-run/cloudflare";
+import { PortableText } from "@portabletext/react";
+import getSiteSettings from "lib/sanity/getSiteSettings";
+import { myPortableTextComponents } from "~/components/myPortableTextComponents";
 
 interface HomePageData {
   description: string;
@@ -14,26 +16,20 @@ export const loader: LoaderFunction = async ({ params, context }) => {
   const pageData: SiteSettings = await getSiteSettings();
 
   if (!pageData) {
-    throw new Error("Failed to load site settings");
+    throw json("Failed to load site settings", 404);
   }
 
-  console.log('siteSettings', pageData);
-  return { ...pageData };
+  return json(pageData);
 };
 
 export const meta: MetaFunction = ({ data }) => {
-  if (!data) {
-    return {
-      title: "Unknown",
-    };
-  }
-  const title = data?.home?.title ?? "Unknown";
-
-  return { title };
+  const defaultTitle = "jems.io Homepage";
+  const homePageTitle = data?.home?.title ?? defaultTitle;
+  return { title: homePageTitle };
 };
 
 export default function Index() {
-  const data:HomePageData = useLoaderData();
+  const data: HomePageData = useLoaderData();
 
   return (
     <div>
@@ -43,8 +39,16 @@ export default function Index() {
         components={myPortableTextComponents}
       />
 
-      <Link to="/posts">Read some posts...</Link>
+      <Link to="/post">Read some posts...</Link>
     </div>
   );
 }
 
+export function CatchBoundary() {
+  return (
+    <div>
+      <h1>404</h1>
+      <p>Page not found</p>
+    </div>
+  );
+}
