@@ -19,14 +19,8 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 };
 
 export const meta: MetaFunction = ({ data }) => {
-  if (!data) {
-    return {
-      title: "Post not found",
-    };
-  }
-  const pageData: Post = data?.pageData;
   return {
-    title: pageData?.title,
+    title: data?.title ?? "Post not found",
   };
 };
 
