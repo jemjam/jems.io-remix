@@ -32,12 +32,12 @@ export default function Index() {
   console.log("our props", data);
 
   return (
-    <div>
+    <main>
       <h1>{data?.pageData?.title ?? "No Title"}</h1>
       <PortableText
         value={data?.pageData?.body ?? []}
         components={myPortableTextComponents}
       />
-    </div>
+    </main>
   );
 }

@@ -32,7 +32,7 @@ export default function Index() {
   const data: HomePageData = useLoaderData();
 
   return (
-    <div>
+    <main>
       <h1>{data?.home?.title ?? "No Title"}</h1>
       <PortableText
         value={data?.home?.body ?? []}
@@ -40,15 +40,15 @@ export default function Index() {
       />
 
       <Link to="/post">Read some posts...</Link>
-    </div>
+    </main>
   );
 }
 
 export function CatchBoundary() {
   return (
-    <div>
+    <main>
       <h1>404</h1>
       <p>Page not found</p>
-    </div>
+    </main>
   );
 }

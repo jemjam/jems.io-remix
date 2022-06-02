@@ -1,8 +1,63 @@
-body {
-  font-size: 1.2rem;
-  background-color: seashell;
-  color: maroon;
+html, body { margin: 0; padding: 0; }
+
+/* 0.75rem(12px) @ 12.5rem(200px) increasing to 1.5rem(24px) @ 100rem(1600px) */
+/* Sizes scale inbetween, but some relative px sizes include:
+    - 12px @ 200px
+    - 14px @ 400px
+    - 16px @ 667px
+    - 18px @ ~900px
+    - 20px @ ~1133px
+*/
+:root {
+  font-size: clamp(0.75rem, calc(0.75rem + (1.5 - 0.75) * ((100vw - 12.5rem) / (100 - 12.5))), 1.5rem);
+  /* Where: calc = min_font_size_in_rem + (max_font_size - min_font_size) * ((100vw - min_viewport_including_rem_unit) / (max_viewport - min_viewport)) */
+
+  /* Safari resize fix */
+  min-height: 0vw;
 }
+
+:root {
+  --colour-page-background: #E0ECDF;
+  --colour-page-foreground-main: #0E2755;
+}
+
+body {
+  background-color: var(--colour-page-background);
+  color: var(--colour-page-foreground-main);
+  line-height: 1.875rem;
+  padding: 1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 400;
+  margin: 0;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-variation-settings: 'wght' 700;
+  line-height: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+h2 {
+  font-weight: 500;
+  margin-top: 3rem;
+}
+
+h3, h4 {
+  margin-top: 2rem;
+}
+
+h3 {
+  font-weight: 600;
+}
+
+h4 {
+  font-weight: 600;
+}
+
+p:not(:last-child) { margin-bottom: 2rem; }
 
 img {
   max-width: 100%;
@@ -10,6 +65,6 @@ img {
 }
 
 body > * {
-  max-width: 80ch;
-  margin: 0 auto;
+  max-width: 60ch;
+  margin: 0 auto 0 0;
 }

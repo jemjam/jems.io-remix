@@ -29,7 +29,7 @@ export default function Index() {
   console.log('data', data)
 
   return (
-    <div>
+    <main>
       <h1>{data?.title ?? "No Title"}</h1>
       <PortableText
         value={data?.body ?? []}
@@ -37,17 +37,17 @@ export default function Index() {
       />
 
       <Link to="/post">Back to posts</Link>
-    </div>
+    </main>
   );
 }
 
 export function CatchBoundary() {
   return (
-    <div>
+    <main>
       <h1>404</h1>
       <p>That page doesn't exist (yet).</p>
 
       <Link to="/post">See posts that do exist.</Link>
-    </div>
+    </main>
   );
 }

@@ -21,7 +21,7 @@ export default function Index() {
   const data = useLoaderData();
 
   return (
-    <div>
+    <main>
       <h1>Latest posts</h1>
       <ul>
         {data.map((post: Post) => {
@@ -33,6 +33,6 @@ export default function Index() {
           );
         })}
       </ul>
-    </div>
+    </main>
   );
 }

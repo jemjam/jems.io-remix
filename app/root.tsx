@@ -24,7 +24,11 @@ export const meta: MetaFunction = () => ({
   viewport: "width=device-width,initial-scale=1",
 });
 
-export const links: LinksFunction = () => [{ rel: "stylesheet", href: style }];
+export const links: LinksFunction = () => [
+  // { rel: "stylesheet", href: typography, as: "style" },
+  { rel: "stylesheet", href: '/fonts/typography.css', as: "style" },
+  { rel: "stylesheet", href: style },
+];
 
 const noFathomIdMessage =
   "Environment var for FATHOM_SITE_ID missing. Analytics will not be available.";
@@ -47,7 +51,7 @@ export default function App() {
     if (fathomSiteId) {
       if (!fathomLoaded.current) {
         Fathom.load(fathomSiteId, {
-          url: "https://unwavering-beneficial.jems.io/script.js"
+          url: "https://unwavering-beneficial.jems.io/script.js",
         });
         fathomLoaded.current = true;
       } else {
